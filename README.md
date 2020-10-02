@@ -34,7 +34,7 @@ Create a new quote on a a given stock. The stock must be registered in the stock
 List all the quotes registered for each stock, in the given format:
 ```json
 {
-  "id": "stockId"
+  "id": "stockId",
   "quotes": {
     "quoteDate": "quotePrice"
   }
