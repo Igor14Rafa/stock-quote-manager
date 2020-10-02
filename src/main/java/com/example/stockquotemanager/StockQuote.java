@@ -1,25 +1,37 @@
 package com.example.stockquotemanager;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class StockQuote {
     @Id
-    private String id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer id;
+
+    private String idStock;
 
     private Date date;
 
     private Integer price;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getIdStock() {
+        return idStock;
+    }
+
+    public void setIdStock(String idStock) {
+        this.idStock = idStock;
     }
 
     public Date getDate() {

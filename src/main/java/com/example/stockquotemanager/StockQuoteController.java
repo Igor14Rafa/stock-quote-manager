@@ -2,7 +2,6 @@ package com.example.stockquotemanager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.net.URI;
 import java.util.*;
 
 @Controller
@@ -74,35 +72,31 @@ public class StockQuoteController {
         }
 
         StockQuote n = new StockQuote();
-        n.setId(id);
+        n.setIdStock(id);
         n.setDate(date);
         n.setPrice(price);
         stockQuoteRepository.save(n);
-        return "Saved " + n.getId().toString();
+        return "Saved " + n.getIdStock().toString();
     }
 
     @GetMapping(path="/stockquotes")
     public @ResponseBody String getAllStockQuotes() {
         ObjectMapper obj = new ObjectMapper();
-        Map<String, Object> map = new HashMap<>();
         String result = "";
 
-        for(String str: stocks) {
-            map.put("id",str);
-            Map<String, String> quotes = new HashMap<>();
-            for (StockQuote stq: stockQuoteRepository.findAll()){
-                if(stq.getId().toString().equals(str)){
-                    quotes.put(stq.getDate().toString(), stq.getPrice().toString());
+        try{
+            for(int i=0;i < stocks.size();i++) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", stocks.get(i));
+                Map<Date, Integer> quotes = new HashMap<>();
+                for (StockQuote stq: stockQuoteRepository.findAll()){
+                    if(stq.getIdStock().equals(stocks.get(i))){
+                        quotes.put(stq.getDate(), stq.getPrice());
+                    }
                 }
+                map.put("quotes", quotes);
+                result += obj.writeValueAsString(map);
             }
-            if(quotes.isEmpty()){
-                map.put("quotes", "empty");
-            }
-            map.put("quotes", quotes);
-        }
-
-        try {
-            result = obj.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -111,7 +105,7 @@ public class StockQuoteController {
     }
 
     @GetMapping(path="/stockquote")
-    public @ResponseBody StockQuote getQuote (@RequestParam String id) {
+    public @ResponseBody StockQuote getQuote (@RequestParam Integer id) {
         Optional<StockQuote> n = stockQuoteRepository.findById(id);
         return n.get();
     }
