@@ -44,7 +44,7 @@ public class StockQuoteController {
     @PostMapping(path="/add")
     public @ResponseBody String addNewQuote (@RequestParam String id
             , @RequestParam Date date
-            , @RequestParam Integer price) {
+            , @RequestParam Float price) {
 
         if(stocks.isEmpty()){
             String url = "http://stock-manager:8080/stock";
@@ -88,7 +88,7 @@ public class StockQuoteController {
             for(int i=0;i < stocks.size();i++) {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", stocks.get(i));
-                Map<Date, Integer> quotes = new HashMap<>();
+                Map<Date, Float> quotes = new HashMap<>();
                 for (StockQuote stq: stockQuoteRepository.findAll()){
                     if(stq.getIdStock().equals(stocks.get(i))){
                         quotes.put(stq.getDate(), stq.getPrice());
